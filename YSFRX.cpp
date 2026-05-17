@@ -21,6 +21,7 @@
 #include "Globals.h"
 #include "YSFRX.h"
 #include "Utils.h"
+#include "YSFFix.h"
 
 const uint8_t SYNC_BIT_START_ERRS = 2U;
 const uint8_t SYNC_BIT_RUN_ERRS   = 4U;
@@ -124,6 +125,20 @@ void CYSFRX::processData(bool bit)
 
 void CYSFRX::writeRSSIData(uint8_t* data)
 {
+#if defined(YSF_REPEATER_MODE)
+  // Set the Repeater Access bit to enable WIRESX RF links
+  // This is the minimal fix for WIRESX one-way communication
+  setRepeaterAccessBit(data);
+
+#if defined(SEND_RSSI_DATA)
+  uint16_t rssi = io.readRSSI();
+  data[121U] = (rssi >> 8) & 0xFFU;
+  data[122U] = (rssi >> 0) & 0xFFU;
+  serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 3U);
+#else
+  serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 1U);
+#endif
+#else
 #if defined(SEND_RSSI_DATA)
   uint16_t rssi = io.readRSSI();
 
@@ -133,5 +148,6 @@ void CYSFRX::writeRSSIData(uint8_t* data)
   serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 3U);
 #else
   serial.writeYSFData(data, YSF_FRAME_LENGTH_BYTES + 1U);
+#endif
 #endif
 }

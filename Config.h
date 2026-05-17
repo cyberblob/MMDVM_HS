@@ -85,6 +85,9 @@
 // Enable P25 Wide modulation:
 // #define ENABLE_P25_WIDE
 
+// Enable YSF Repeater mode (WIRESX RF link support):
+#define YSF_REPEATER_MODE
+
 // Disable mode LEDs blink during scan mode:
 // #define QUIET_MODE_LEDS
 
@@ -117,5 +120,10 @@
 
 // Enable UDID feature
 // #define ENABLE_UDID
+
+// YSF Repeater configuration (used for WIRESX RF link support)
+#if defined(YSF_REPEATER_MODE)
+#define YSF_REPEATER_SET_FICH_BIT 1         // Enable Repeater Access bit in FICH for WIRESX (default: on)
+#endif
 
 #endif
