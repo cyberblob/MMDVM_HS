@@ -62,8 +62,8 @@
 // #define AD7021_GAIN_HIGH
 
 // Host communication selection:
-// #define STM32_USART1_HOST
-#define STM32_USB_HOST
+#define STM32_USART1_HOST
+// #define STM32_USB_HOST
 // #define STM32_I2C_HOST
 
 // I2C host address:
