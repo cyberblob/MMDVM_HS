@@ -27,7 +27,7 @@
 // 3) MMDVM_HS_Hat revisions 1.1, 1.2 and 1.4 (DB9MAT & DF2ET)
 // #define MMDVM_HS_HAT_REV12
 // 4) MMDVM_HS_Dual_Hat revisions 1.0 (DB9MAT & DF2ET & DO7EN)
-// #define MMDVM_HS_DUAL_HAT_REV10
+#define MMDVM_HS_DUAL_HAT_REV10
 // 5) Nano hotSPOT (BI7JTA)
 // #define NANO_HOTSPOT
 // 6) NanoDV NPi or USB revisions 1.0 (BG4TGO & BG5HHP)
@@ -107,7 +107,7 @@
 // #define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable for RPi 3B+, USB mode
-#define LONG_USB_RESET
+//#define LONG_USB_RESET
 
 // Enable modem debug messages
 #define ENABLE_DEBUG
@@ -119,7 +119,7 @@
 // #define DISABLE_FREQ_BAN
 
 // Enable UDID feature
-// #define ENABLE_UDID
+#define ENABLE_UDID
 
 // YSF Repeater configuration (used for WIRESX RF link support)
 #if defined(YSF_REPEATER_MODE)
