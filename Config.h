@@ -107,7 +107,7 @@
 // #define USE_ALTERNATE_POCSAG_LEDS
 
 // Enable for RPi 3B+, USB mode
-#define LONG_USB_RESET
+//#define LONG_USB_RESET
 
 // Enable modem debug messages
 #define ENABLE_DEBUG
