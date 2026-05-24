@@ -74,7 +74,7 @@ static uint16_t calculateBCHParity(const uint8_t* fichData)
     // Process first 12 bytes of FICH (96 data bits)
     for (uint8_t i = 0U; i < 12U; i++) {
         // XOR current byte with parity (with bit reversal for BCH)
-        uint8_t byte = fickData[i];
+        uint8_t byte = fichData[i];
         
         // Simple BCH-like syndrome calculation
         // Using polynomial x^15 + x^10 + x^8 + x^7 + x^5 + x^4 + x^3 + 1
@@ -157,7 +157,7 @@ uint8_t CYSF_FICH_Decoder::decode(const uint8_t* frame, YSF_FICH& fick)
                  ((uint32_t)fichStart[YSF_FICH_BYTE11] << 24U);
     
     // Extract Miscellaneous flags from byte 12
-    fick.miscFlags = fickStart[YSF_FICH_BYTE12];
+    fick.miscFlags = fichStart[YSF_FICH_BYTE12];
     
     return YSF_FICH_OK;
 }
@@ -260,42 +260,42 @@ uint8_t CYSF_FICH_Encoder::encode(uint8_t* frame, const YSF_FICH& fick)
     // Encode Frame Type (4 bits) to byte 0, bits 0-3
     // Note: byte 0 is shared between Frame Type and DN Mode
     // Frame type is duplicated in both byte 0 and byte 1 per YSF spec
-    fickStart[YSF_FICH_BYTE0] = (fick.frameType & 0x0FU);
+    fichStart[YSF_FICH_BYTE0] = (fick.frameType & 0x0FU);
 
     // Encode DN Mode (2 bits) to byte 0, bits 4-5
-    fickStart[YSF_FICH_BYTE0] |= (fick.dnMode & 0x03U) << 4U;
+    fichStart[YSF_FICH_BYTE0] |= (fick.dnMode & 0x03U) << 4U;
 
     // Encode Deviation (1 bit) to byte 0, bit 6
-    fickStart[YSF_FICH_BYTE0] |= (fick.deviation & 0x01U) << 6U;
+    fichStart[YSF_FICH_BYTE0] |= (fick.deviation & 0x01U) << 6U;
 
     // Encode to byte 1: Frame Type, DN Mode, Repeater Access
     // Frame Type in bits 0-3 (duplicated)
-    fickStart[YSF_FICH_BYTE1] = (fick.frameType1 & 0x0FU);
+    fichStart[YSF_FICH_BYTE1] = (fick.frameType1 & 0x0FU);
 
     // DN Mode in bits 4-5 (duplicated)
-    fickStart[YSF_FICH_BYTE1] |= (fick.dnMode1 & 0x03U) << 4U;
+    fichStart[YSF_FICH_BYTE1] |= (fick.dnMode1 & 0x03U) << 4U;
 
     // Repeater Access in bit 6 - KEY FIELD FOR WIRESX
-    fickStart[YSF_FICH_BYTE1] |= (fick.repeaterAccess & 0x01U) << 6U;
+    fichStart[YSF_FICH_BYTE1] |= (fick.repeaterAccess & 0x01U) << 6U;
 
     // Encode Frame Counter (16-bit) to bytes 2-3 (little-endian)
-    fickStart[YSF_FICH_BYTE2] = fick.frameCounter & 0xFFU;
-    fickStart[YSF_FICH_BYTE3] = (fick.frameCounter >> 8U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE2] = fick.frameCounter & 0xFFU;
+    fichStart[YSF_FICH_BYTE3] = (fick.frameCounter >> 8U) & 0xFFU;
 
     // Encode Destination ID (32-bit) to bytes 4-7 (little-endian)
-    fickStart[YSF_FICH_BYTE4] = fick.destId & 0xFFU;
-    fickStart[YSF_FICH_BYTE5] = (fick.destId >> 8U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE6] = (fick.destId >> 16U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE7] = (fick.destId >> 24U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE4] = fick.destId & 0xFFU;
+    fichStart[YSF_FICH_BYTE5] = (fick.destId >> 8U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE6] = (fick.destId >> 16U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE7] = (fick.destId >> 24U) & 0xFFU;
 
     // Encode Source ID (32-bit) to bytes 8-11 (little-endian)
-    fickStart[YSF_FICH_BYTE8] = fick.srcId & 0xFFU;
-    fickStart[YSF_FICH_BYTE9] = (fick.srcId >> 8U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE10] = (fick.srcId >> 16U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE11] = (fick.srcId >> 24U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE8] = fick.srcId & 0xFFU;
+    fichStart[YSF_FICH_BYTE9] = (fick.srcId >> 8U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE10] = (fick.srcId >> 16U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE11] = (fick.srcId >> 24U) & 0xFFU;
 
     // Encode Miscellaneous flags to byte 12
-    fickStart[YSF_FICH_BYTE12] = fick.miscFlags;
+    fichStart[YSF_FICH_BYTE12] = fick.miscFlags;
 
     // Calculate and write BCH parity
     recalculateBCH(frame);
@@ -315,9 +315,9 @@ void CYSF_FICH_Encoder::setRepeaterAccess(uint8_t* frame, bool enable)
     // Set or clear bit 6 of byte 1 (Repeater Access bit)
     // Bit 6 mask = 0x40
     if (enable)
-        fickStart[YSF_FICH_BYTE1] |= 0x40U;    // Set bit 6
+        fichStart[YSF_FICH_BYTE1] |= 0x40U;    // Set bit 6
     else
-        fickStart[YSF_FICH_BYTE1] &= ~0x40U;   // Clear bit 6
+        fichStart[YSF_FICH_BYTE1] &= ~0x40U;   // Clear bit 6
 
     // Recalculate BCH parity after modification
     recalculateBCH(frame);
@@ -333,8 +333,8 @@ void CYSF_FICH_Encoder::setFrameCounter(uint8_t* frame, uint16_t counter)
     uint8_t* fichStart = frame + YSF_FICH_BYTE_OFFSET;
 
     // Write 16-bit counter to bytes 2-3 (little-endian)
-    fickStart[YSF_FICH_BYTE2] = counter & 0xFFU;
-    fickStart[YSF_FICH_BYTE3] = (counter >> 8U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE2] = counter & 0xFFU;
+    fichStart[YSF_FICH_BYTE3] = (counter >> 8U) & 0xFFU;
 
     // Recalculate BCH parity after modification
     recalculateBCH(frame);
@@ -354,10 +354,10 @@ uint8_t CYSF_FICH_Encoder::setDestId(uint8_t* frame, uint32_t dgId)
     uint8_t* fichStart = frame + YSF_FICH_BYTE_OFFSET;
 
     // Write DG-ID to bytes 4-7 (only low byte used, rest zero)
-    fickStart[YSF_FICH_BYTE4] = dgId & 0xFFU;
-    fickStart[YSF_FICH_BYTE5] = 0U;
-    fickStart[YSF_FICH_BYTE6] = 0U;
-    fickStart[YSF_FICH_BYTE7] = 0U;
+    fichStart[YSF_FICH_BYTE4] = dgId & 0xFFU;
+    fichStart[YSF_FICH_BYTE5] = 0U;
+    fichStart[YSF_FICH_BYTE6] = 0U;
+    fichStart[YSF_FICH_BYTE7] = 0U;
 
     // Recalculate BCH parity after modification
     recalculateBCH(frame);
@@ -375,10 +375,10 @@ void CYSF_FICH_Encoder::setSrcId(uint8_t* frame, uint32_t srcId)
     uint8_t* fichStart = frame + YSF_FICH_BYTE_OFFSET;
 
     // Write 32-bit Source ID to bytes 8-11 (little-endian)
-    fickStart[YSF_FICH_BYTE8] = srcId & 0xFFU;
-    fickStart[YSF_FICH_BYTE9] = (srcId >> 8U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE10] = (srcId >> 16U) & 0xFFU;
-    fickStart[YSF_FICH_BYTE11] = (srcId >> 24U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE8] = srcId & 0xFFU;
+    fichStart[YSF_FICH_BYTE9] = (srcId >> 8U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE10] = (srcId >> 16U) & 0xFFU;
+    fichStart[YSF_FICH_BYTE11] = (srcId >> 24U) & 0xFFU;
 
     // Recalculate BCH parity after modification
     recalculateBCH(frame);
@@ -400,8 +400,8 @@ void CYSF_FICH_Encoder::recalculateBCH(uint8_t* frame)
     // The BCH parity is 96 bits total (12 bytes), we store the first 16 bits here
     // In practice, the full 96-bit parity is calculated and spread across bytes 13-24
     // For simplicity, we store the core 16-bit checksum in bytes 13-14
-    fickStart[13U] = parity & 0xFFU;
-    fickStart[14U] = (parity >> 8U) & 0xFFU;
+    fichStart[13U] = parity & 0xFFU;
+    fichStart[14U] = (parity >> 8U) & 0xFFU;
 
     // Note: The full 96-bit BCH code for YSF FICH would need more complex
     // implementation. This basic version provides parity protection for

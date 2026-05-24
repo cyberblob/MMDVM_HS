@@ -20,6 +20,8 @@
 #if !defined(YSFDEFINES_H)
 #define  YSFDEFINES_H
 
+#include <cstdint>
+
 const unsigned int YSF_FRAME_LENGTH_BYTES = 120U;
 const unsigned int YSF_FRAME_LENGTH_BITS  = YSF_FRAME_LENGTH_BYTES * 8U;
 

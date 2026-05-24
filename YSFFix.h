@@ -23,8 +23,8 @@
 #include "YSFDefines.h"
 #include "YSFFICH.h"
 
-// FICH byte 1 offset in YSF frame (5 bytes sync + 31 bits FICH = byte offset 36)
-const uint8_t YSF_FICH_BYTE1_OFFSET = 36U;
+// FICH byte 1 offset in YSF frame: 5 bytes sync + 1 byte FICH = byte offset 6
+const uint8_t YSF_FICH_BYTE1_OFFSET = 6U;
 
 /*
  * setRepeaterAccessBit - Simple function to enable WIRESX repeater operation

@@ -52,7 +52,6 @@ const uint8_t MMDVM_DMR_ABORT    = 0x1EU;
 
 const uint8_t MMDVM_YSF_DATA     = 0x20U;
 const uint8_t MMDVM_YSF_LOST     = 0x21U;
-const uint8_t MMDVM_YSF_RF_EXIT  = 0x23U;
 
 const uint8_t MMDVM_P25_HDR      = 0x30U;
 const uint8_t MMDVM_P25_LDU      = 0x31U;
@@ -826,15 +825,6 @@ case MMDVM_CAL_DATA:
             }
             break;
 
-          case MMDVM_YSF_RF_EXIT:
-            // Forward RF exit frame to host - send 3 for reliability
-            // Duplicates are handled by protocol, this ensures at least 3 sent
-            if (m_ysfEnable) {
-              for (uint8_t i = 0U; i < 3U; i++)
-                writeYSFRFExit();
-            }
-            break;
-
           case MMDVM_P25_HDR:
             if (m_p25Enable) {
               if (m_modemState == STATE_IDLE || m_modemState == STATE_P25)
@@ -1167,19 +1157,6 @@ void CSerialPort::writeYSFLost()
   reply[0U] = MMDVM_FRAME_START;
   reply[1U] = 3U;
   reply[2U] = MMDVM_YSF_LOST;
-
-  writeInt(1U, reply, 3);
-}
-
-void CSerialPort::writeYSFRFExit()
-{
-  // Send single MMDVM_YSF_RF_EXIT frame
-  // Caller handles multiple sends for reliability
-  uint8_t reply[3U];
-
-  reply[0U] = MMDVM_FRAME_START;
-  reply[1U] = 3U;
-  reply[2U] = MMDVM_YSF_RF_EXIT;
 
   writeInt(1U, reply, 3);
 }

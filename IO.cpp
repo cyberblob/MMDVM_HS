@@ -155,10 +155,6 @@ void CIO::process()
 
   // Switch off the transmitter if needed
   if (m_txBuffer.getData() == 0U && m_tx) {
-    // Send YSF RF exit frames (3 consecutive) for proper termination
-    for (uint8_t i = 0U; i < 3U; i++)
-      serial.writeYSFRFExit();
-
     if(m_cwid_state) { // check for CW ID end of transmission
       m_cwid_state = false;
       // Restoring previous mode

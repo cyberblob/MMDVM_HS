@@ -20,6 +20,7 @@
 #if !defined(YSFFICH_H)
 #define  YSFFICH_H
 
+#include <cstdint>
 #include "YSFDefines.h"
 
 // FICH bit offsets within the YSF frame (bits 40-239 = 200 bits)
